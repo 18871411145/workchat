@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.lxbest.wb2020.workchat">
+
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme">
+        <meta-data android:name="com.alibaba.app.appkey" android:value="30273161"/>
+        <meta-data android:name="com.alibaba.app.appsecret" android:value="424ee0f401194012533062eed37c5863"/>
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Login_activity" />
+        <activity android:name=".Home_Activity" />
+        <activity android:name=".Reg_activity" />
+        <activity android:name=".Add_Task_Activity" />
+        <activity android:name=".Wode_Activity" />
+        <activity android:name=".Task_Detail_Activity" />
+        <activity android:name=".Joined_Activity" />
+        <activity android:name=".Member_Activity" />
+        <activity android:name=".ZSZJ_Activity" />
+        <activity android:name=".ZSZJ_XQ_Activity" />
+        <activity android:name=".DevTD.Test_TS_Activity" />
+
+        <receiver
+            android:name=".MyMessageReceiver"
+            android:exported="false"> <!-- 为保证receiver安全，建议设置不可导出，如需对其他应用开放可通过android：permission进行限制 -->
+            <intent-filter>
+                <action android:name="com.alibaba.push2.action.NOTIFICATION_OPENED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alibaba.push2.action.NOTIFICATION_REMOVED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alibaba.sdk.android.push.RECEIVE" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
