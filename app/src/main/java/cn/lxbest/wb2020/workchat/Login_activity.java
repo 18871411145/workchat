@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,7 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
 
     Button btn_getyzm;//获取验证码
     Button btn_login;//登录
+    TextView tv_zc;//注册按钮
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,10 +43,12 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
         edit_yzm =findViewById(R.id.yzm_EditText);
         btn_getyzm =findViewById(R.id.button1);
         btn_login =findViewById(R.id.button2);
+        tv_zc=findViewById(R.id.tv_zc);
 
 
         btn_getyzm.setOnClickListener(this);
         btn_login.setOnClickListener(this);
+        tv_zc.setOnClickListener(this);
 
     }
 
@@ -62,6 +66,9 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
                 setenable(false);
                 postData();
                 break;
+            case R.id.tv_zc:
+                Intent intent=new Intent(this,Reg_activity.class);
+                startActivity(intent);
         }
     }
 
@@ -69,6 +76,7 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
     private void setenable(boolean b){
         btn_getyzm.setEnabled(b);
          btn_login.setEnabled(b);
+         tv_zc.setEnabled(b);
     }
 
     void getYAM(){

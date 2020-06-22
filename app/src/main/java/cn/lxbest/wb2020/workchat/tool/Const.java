@@ -65,7 +65,7 @@ public class Const {
         public static String reg="reg";
         //登录
         public static String login="login";
-        //获取公司所有部门信息(带参数得到指定部门下面职位信息)
+        //获取公司所有部门信息
         public static String department="department";
         //获取主页task
         public static String task="task";
@@ -130,6 +130,7 @@ public class Const {
         public static final String Sex="sex";//性别
         public static final String Age="age";//年龄
 
+        public static final String company ="company";//所在公司
         public static final String bumen ="bumen";//所属部门
         public static final String zhiwei ="zhiwei";//所在职位
         public static final String LastLogin="lastlogin";//最后登录时间

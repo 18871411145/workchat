@@ -45,8 +45,8 @@
         app:layout_constraintTop_toBottomOf="@+id/name_EditText"/>
 
 
-    <EditText
-        android:id="@+id/company_EditText"
+    <TextView
+        android:id="@+id/company_tv"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="16dp"
@@ -57,8 +57,8 @@
         android:background="@drawable/edit_stroke"
         android:hint="公司名称"
         android:textSize="20dp"
-        android:lines="1"
         android:singleLine="true"
+        android:gravity="center|left"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,10 +84,10 @@
         android:paddingEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/company_EditText"/>
+        app:layout_constraintTop_toBottomOf="@+id/company_tv"/>
 
-    <TextView
-        android:id="@+id/position_TextView"
+    <EditText
+        android:id="@+id/edit_TextView"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="16dp"
@@ -97,7 +97,6 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/edit_stroke"
         android:hint="选择职位"
-        android:lines="1"
         android:singleLine="true"
         android:gravity="center|left"
         android:textSize="20dp"

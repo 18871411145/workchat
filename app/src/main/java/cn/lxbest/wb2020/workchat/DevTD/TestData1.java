@@ -78,23 +78,23 @@ public class TestData1 {
         return jsonObject;
     }
 
-    /**得到部门下职位*/
-    public static JSONObject getPo_Data(){
+    /**得到公司集合*/
+    public static JSONObject getcom_Data(){
         JSONObject jsonObject=new JSONObject();
         try {
             jsonObject.put(Const.Key_Resp.Code,200);
             List<HashMap<String,Object>> list=new ArrayList<>();
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.zhiwei,"程序开发");
+                put(Const.Field_Table_User.company,"baidu");
             }});
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.zhiwei,"美术设计");
+                put(Const.Field_Table_User.company,"beirui");
             }});
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.zhiwei,"项目架构");
+                put(Const.Field_Table_User.company,"ali");
             }});
 
             JSONArray jsonArray=new JSONArray(list);

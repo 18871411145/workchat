@@ -143,7 +143,8 @@ public class App extends Application {
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.bumen)) App.user.department=data.getString(Const.Field_Table_User.bumen);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.zhiwei)) App.user.position=data.getString(Const.Field_Table_User.zhiwei);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Perm)) App.user.permission=data.getInt(Const.Field_Table_User.Perm);
-            if(Funcs.jsonItemValid(data,Const.Field_Table_User.LastLogin)) App.user.last_login=data.getLong(Const.Field_Table_User.LastLogin);
+//            if(Funcs.jsonItemValid(data,Const.Field_Table_User.LastLogin)) App.user.last_login=data.getLong(Const.Field_Table_User.LastLogin);
+            App.user.last_login=new Date().getTime();
         }catch (Exception e){
 
         }

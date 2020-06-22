@@ -29,9 +29,9 @@ import cz.msebera.android.httpclient.protocol.HTTP;
 
 public class Reg_activity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText edt_name,edt_mobile;
+    EditText edt_name,edt_mobile, edit_position;
 
-    TextView text_department,text_position;
+    TextView text_company,text_department;
 
     Button btn_reg;
 
@@ -39,10 +39,8 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
 
     int state=1;
 
-    List<String> list_dep=new ArrayList<>();//所有部门集合(加载一次就保存起来保持不变)
-    int position=0;//对应部门下标。
-
-    List<String> list_pos=new ArrayList<>();//对应部门职位集合(根据不同部门会跟着变化)
+    List<String> list_dep=new ArrayList<>();//所有部门集合
+    List<String> list_com=new ArrayList<>();//所有注册公司
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,16 +51,17 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
         init();
 
         text_department.setOnClickListener(this);
-        text_position.setOnClickListener(this);
         btn_reg.setOnClickListener(this);
+        text_company.setOnClickListener(this);
 
         pickerView=new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v){
-                if(state==1){
+                if(state==2){
                     text_department.setText(list_dep.get(options1));
-                    position=options1;
-                }else text_position.setText(list_pos.get(options1));
+                }else {
+                    text_company.setText(list_com.get(options1));
+                }
 
             }
         }).build();
@@ -75,19 +74,23 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
     void init(){
         edt_name=findViewById(R.id.name_EditText);
         edt_mobile=findViewById(R.id.mobile_EditText);
+        text_company=findViewById(R.id.company_tv);
         text_department=findViewById(R.id.department_TextView);
-        text_position=findViewById(R.id.position_TextView);
+        edit_position=findViewById(R.id.edit_TextView);
 
         btn_reg=findViewById(R.id.btn_reg);
     }
 
+    //参数为公司名称
     void getData(final String s){
-        list_pos=new ArrayList<>();
         String url=null;
         if(s==null){
-          url=Funcs.servUrl(Const.Key_Resp_Path.department);
-        }else url=Funcs.servUrlWQ(Const.Key_Resp_Path.department,"position="+s);
+            url=Funcs.servUrl("gs");
+        }else{
 
+            url=Funcs.servUrlWQ(Const.Key_Resp_Path.department,"gs="+s);
+
+        }
         App.http.get(url, new AsyncHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -99,10 +102,12 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
 
                 if(App.env== Const.Env.DEV_TD){
-                    if(s==null){
+                    if(s!=null){
                         parseData(TestData1.getDap_Data());
-                    }else
-                          parseData(TestData1.getPo_Data());
+                    }else{
+                        parseData(TestData1.getcom_Data());
+                    }
+
                 }else{
                     Funcs.showtoast(Reg_activity.this,"获取部门信息失败");
                 }
@@ -123,7 +128,7 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
                     if(jsonObject.has(Const.Field_Table_User.bumen)){
                         list_dep.add(jsonObject.getString(Const.Field_Table_User.bumen));
                     }else{
-                        list_pos.add(jsonObject.getString(Const.Field_Table_User.zhiwei));
+                        list_com.add(jsonObject.getString(Const.Field_Table_User.company));
                     }
                 }
 
@@ -142,9 +147,9 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
     //显示pickview，此方法必须在state定义后使用
     void showpick(){
         if(state==1){
-            pickerView.setPicker(list_dep);
+            pickerView.setPicker(list_com);
         }else{
-            pickerView.setPicker(list_pos);
+            pickerView.setPicker(list_dep);
         }
         pickerView.show();
     }
@@ -153,22 +158,22 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         int id=v.getId();
         switch(id){
-            case R.id.department_TextView:
+            case R.id.company_tv:
                 state=1;
-                //得到公司部门列表
-                if(list_dep.size()==0){
+                //得到公司列表
+                if(list_com.size()==0){
                 getData(null);
                 }else{
                     showpick();
                 }
                 break;
-            case R.id.position_TextView:
-                //得到对应部门的所有职位
-                if(text_department.getText().toString().length()==0){
-                    Funcs.showtoast(this,"请先选择部门");
+            case R.id.department_TextView:
+                //得到公司下部门
+                if(text_company.getText().toString().length()==0){
+                    Funcs.showtoast(this,"请先选择公司");
                 }else{
                     state=2;
-                    getData(list_dep.get(position));
+                    getData(text_company.getText().toString());
                 }
                 break;
             case R.id.btn_reg:
@@ -185,28 +190,39 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
         String url=Funcs.servUrl(Const.Key_Resp_Path.reg);
         String name=edt_name.getText().toString();
         String mobile=edt_mobile.getText().toString();
+        String company=text_company.getText().toString();
         String dep=text_department.getText().toString();
-        String pos=text_position.getText().toString();
+        String pos= edit_position.getText().toString();
 
-        if(dep.length()==0){if(name.length()==0){
+
+            if(name.length()==0){
             Funcs.showtoast(this,"姓名不能为空");
             return;
-        }
+            }
             if(mobile.length()==0){
                 Funcs.showtoast(this,"电话不能为空");
                 return;
             }
-            Funcs.showtoast(this,"部门不能为空");
-            return;
-        }
-        if(pos.length()==0){
-            Funcs.showtoast(this,"职位不能为空");
-            return;
-        }
+
+            if(company.length()==0){
+                Funcs.showtoast(this,"公司不能为空");
+                return;
+            }
+
+            if(dep.length()==0){
+                Funcs.showtoast(this,"部门不能为空");
+                return;
+            }
+
+            if(pos.length()==0){
+                Funcs.showtoast(this,"职位不能为空");
+                return;
+            }
         JSONObject jsonObject=new JSONObject();
         try {
             jsonObject.put(Const.Field_Table_User.Name,name);
             jsonObject.put(Const.Field_Table_User.phone,mobile);
+            jsonObject.put(Const.Field_Table_User.company,company);
             jsonObject.put(Const.Field_Table_User.bumen,dep);
             jsonObject.put(Const.Field_Table_User.zhiwei,pos);
 
