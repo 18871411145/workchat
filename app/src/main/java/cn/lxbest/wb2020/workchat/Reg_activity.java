@@ -120,10 +120,10 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
                 JSONArray jsonArray=data.getJSONArray(Const.Key_Resp.Data);
                 for(int i=0;i<jsonArray.length();i++){
                     JSONObject jsonObject=jsonArray.getJSONObject(i);
-                    if(jsonObject.has(Const.Field_Table_User.department)){
-                        list_dep.add(jsonObject.getString(Const.Field_Table_User.department));
+                    if(jsonObject.has(Const.Field_Table_User.bumen)){
+                        list_dep.add(jsonObject.getString(Const.Field_Table_User.bumen));
                     }else{
-                        list_pos.add(jsonObject.getString(Const.Field_Table_User.position));
+                        list_pos.add(jsonObject.getString(Const.Field_Table_User.zhiwei));
                     }
                 }
 
@@ -207,8 +207,8 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
         try {
             jsonObject.put(Const.Field_Table_User.Name,name);
             jsonObject.put(Const.Field_Table_User.phone,mobile);
-            jsonObject.put(Const.Field_Table_User.department,dep);
-            jsonObject.put(Const.Field_Table_User.position,pos);
+            jsonObject.put(Const.Field_Table_User.bumen,dep);
+            jsonObject.put(Const.Field_Table_User.zhiwei,pos);
 
             HttpEntity entity=new StringEntity(jsonObject.toString(), HTTP.UTF_8);
 

@@ -22,9 +22,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +44,6 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
     TextView text_age;//年龄 5
     TextView text_department;//所在部门 6
     TextView text_position;//所处职位 7
-    TextView text_lastlogin;//最后登录时间
     TextView text_joined;//我参与组的列表
     TextView text_askfor;//员工申请
     //编辑按钮
@@ -73,7 +70,6 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         text_age=findViewById(R.id.age);
         text_department=findViewById(R.id.department);
         text_position=findViewById(R.id.zhuwei);
-        text_lastlogin=findViewById(R.id.lastlogin);
         text_joined=findViewById(R.id.wdzphj);
         text_askfor=findViewById(R.id.xqhzlb);
 
@@ -109,8 +105,6 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         text_department.setText(App.user.department);
         text_position.setText(App.user.position);
         text_age.setText(App.user.age+"");
-         String last=Const.Year_Month_Day.format(new Date(App.user.last_login));
-        text_lastlogin.setText(last);
     }
 
     @Override
@@ -184,14 +178,14 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
             case R.id.textView4:
                 //编辑部门
                 state=5;
-                map.put(5,Const.Field_Table_User.department);
+                map.put(5,Const.Field_Table_User.bumen);
                 cons_bj.setVisibility(View.VISIBLE);
                 text_bj.setText("所在部门");
                 break;
             case R.id.textView5:
                 //编辑职位
                 state=6;
-                map.put(6,Const.Field_Table_User.position);
+                map.put(6,Const.Field_Table_User.zhiwei);
                 cons_bj.setVisibility(View.VISIBLE);
                 text_bj.setText("所处职位");
                 break;

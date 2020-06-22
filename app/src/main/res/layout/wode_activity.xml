@@ -369,6 +369,7 @@
                 android:layout_height="25dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/textView33"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView33" />
@@ -381,6 +382,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:text="最后登录时间"
+                android:visibility="invisible"
                 android:textColor="@color/black"
                 android:textSize="16dp"
                 app:layout_constraintStart_toEndOf="@+id/imageView6"
@@ -396,6 +398,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:text="2019/3/23"
+                android:visibility="invisible"
                 android:textColor="@color/black"
                 android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView33"

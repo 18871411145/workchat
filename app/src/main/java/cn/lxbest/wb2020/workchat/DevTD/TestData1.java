@@ -25,14 +25,14 @@ public class TestData1 {
             JSONObject data=new JSONObject();
 
             data.put(Const.Field_Table_User.Uid,1212121212);
-            data.put(Const.Field_Table_User.AvatarQnid,1212121212);
+            data.put(Const.Field_Table_User.qnid,1212121212);
             data.put(Const.Field_Table_User.Name,"小华");
             data.put(Const.Field_Table_User.Sex,1);
             data.put(Const.Field_Table_User.Age,22);
             data.put(Const.Field_Table_User.phone,"13112345678");
             data.put(Const.Field_Table_User.Email,"1231231231@qq.com");
-            data.put(Const.Field_Table_User.department,"设计部");
-            data.put(Const.Field_Table_User.position,"美术设计");
+            data.put(Const.Field_Table_User.bumen,"设计部");
+            data.put(Const.Field_Table_User.zhiwei,"美术设计");
             data.put(Const.Field_Table_User.Perm,Const.Perm.charge);
             data.put(Const.Field_Table_User.LastLogin,new Date().getTime());
 
@@ -53,19 +53,19 @@ public class TestData1 {
             List<HashMap<String,Object>> list=new ArrayList<>();
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.department,"销售部");
+                put(Const.Field_Table_User.bumen,"销售部");
             }});
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.department,"设计部");
+                put(Const.Field_Table_User.bumen,"设计部");
             }});
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.department,"财务部");
+                put(Const.Field_Table_User.bumen,"财务部");
             }});
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.department,"管理部");
+                put(Const.Field_Table_User.bumen,"管理部");
             }});
 
             JSONArray jsonArray=new JSONArray(list);
@@ -86,15 +86,15 @@ public class TestData1 {
             List<HashMap<String,Object>> list=new ArrayList<>();
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.position,"程序开发");
+                put(Const.Field_Table_User.zhiwei,"程序开发");
             }});
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.position,"美术设计");
+                put(Const.Field_Table_User.zhiwei,"美术设计");
             }});
 
             list.add(new HashMap<String, Object>(){{
-                put(Const.Field_Table_User.position,"项目架构");
+                put(Const.Field_Table_User.zhiwei,"项目架构");
             }});
 
             JSONArray jsonArray=new JSONArray(list);
@@ -179,22 +179,22 @@ public class TestData1 {
             list.add(new HashMap<String, Object>(){{
                 put(Const.Field_Table_User.Name,"jack");
                 put(Const.Field_Table_User.phone,"13112345678");
-                put(Const.Field_Table_User.department,"销售部");
-                put(Const.Field_Table_User.position,"售后办理");
+                put(Const.Field_Table_User.bumen,"销售部");
+                put(Const.Field_Table_User.zhiwei,"售后办理");
             }});
 
             list.add(new HashMap<String, Object>(){{
                 put(Const.Field_Table_User.Name,"tom");
                 put(Const.Field_Table_User.phone,"13112345678");
-                put(Const.Field_Table_User.department,"设计部");
-                put(Const.Field_Table_User.position,"程序设计");
+                put(Const.Field_Table_User.bumen,"设计部");
+                put(Const.Field_Table_User.zhiwei,"程序设计");
             }});
 
             list.add(new HashMap<String, Object>(){{
                 put(Const.Field_Table_User.Name,"marry");
                 put(Const.Field_Table_User.phone,"13112345678");
-                put(Const.Field_Table_User.department,"财务部");
-                put(Const.Field_Table_User.position,"资金规划");
+                put(Const.Field_Table_User.bumen,"财务部");
+                put(Const.Field_Table_User.zhiwei,"资金规划");
             }});
 
             JSONArray jsonArray=new JSONArray(list);

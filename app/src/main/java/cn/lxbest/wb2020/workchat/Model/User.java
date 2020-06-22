@@ -20,7 +20,7 @@ public class User {
     public String email;
     public String mobile;
     public int permission;//权限
-    public String department="设计部";//部门
+    public String department;//部门
     public String position;//职位
     public long last_login;//最后登陆时间
 
@@ -31,14 +31,14 @@ public class User {
     public User(JSONObject jsonObject){
         try{
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.Uid))uid=jsonObject.getInt(Const.Field_Table_User.Uid);
-            if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.AvatarQnid))qnid=jsonObject.getString(Const.Field_Table_User.AvatarQnid);
+            if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.qnid))qnid=jsonObject.getString(Const.Field_Table_User.qnid);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.Name))name=jsonObject.getString(Const.Field_Table_User.Name);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.Perm)) permission=jsonObject.getInt(Const.Field_Table_User.Perm);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.Email)) email=jsonObject.getString(Const.Field_Table_User.Email);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.phone)) mobile=jsonObject.getString(Const.Field_Table_User.phone);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.Sex)) sex=jsonObject.getInt(Const.Field_Table_User.Sex);
-            if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.department)) department=jsonObject.getString(Const.Field_Table_User.department);
-            if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.position)) position=jsonObject.getString(Const.Field_Table_User.position);
+            if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.bumen)) department=jsonObject.getString(Const.Field_Table_User.bumen);
+            if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.zhiwei)) position=jsonObject.getString(Const.Field_Table_User.zhiwei);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.LastLogin)) last_login=jsonObject.getLong(Const.Field_Table_User.LastLogin);
         }catch (Exception e){
 

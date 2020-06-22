@@ -2,17 +2,14 @@ package cn.lxbest.wb2020.workchat;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.core.app.ActivityCompat;
@@ -29,7 +26,6 @@ import com.qiniu.android.storage.UploadManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -144,8 +140,8 @@ public class App extends Application {
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Age)) App.user.age=data.getInt(Const.Field_Table_User.Age);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.phone)) App.user.mobile=data.getString(Const.Field_Table_User.phone);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Email)) App.user.email=data.getString(Const.Field_Table_User.Email);
-            if(Funcs.jsonItemValid(data,Const.Field_Table_User.department)) App.user.department=data.getString(Const.Field_Table_User.department);
-            if(Funcs.jsonItemValid(data,Const.Field_Table_User.position)) App.user.position=data.getString(Const.Field_Table_User.position);
+            if(Funcs.jsonItemValid(data,Const.Field_Table_User.bumen)) App.user.department=data.getString(Const.Field_Table_User.bumen);
+            if(Funcs.jsonItemValid(data,Const.Field_Table_User.zhiwei)) App.user.position=data.getString(Const.Field_Table_User.zhiwei);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Perm)) App.user.permission=data.getInt(Const.Field_Table_User.Perm);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.LastLogin)) App.user.last_login=data.getLong(Const.Field_Table_User.LastLogin);
         }catch (Exception e){
@@ -172,11 +168,11 @@ public class App extends Application {
     public static void putUserToPreference(){
         SharedPreferences.Editor editor=sharedPreferences(Const.Key_SharedPref.Account).edit();
         editor.putInt(Const.Field_Table_User.Uid,App.user.uid);
-        editor.putString(Const.Field_Table_User.AvatarQnid,App.user.qnid);
+        editor.putString(Const.Field_Table_User.qnid,App.user.qnid);
         editor.putString(Const.Field_Table_User.Name,App.user.name);
         editor.putInt(Const.Field_Table_User.Perm,App.user.permission);
-        editor.putString(Const.Field_Table_User.department,App.user.department);
-        editor.putString(Const.Field_Table_User.position,App.user.position);
+        editor.putString(Const.Field_Table_User.bumen,App.user.department);
+        editor.putString(Const.Field_Table_User.zhiwei,App.user.position);
         editor.putString(Const.Field_Table_User.Email,App.user.email);
         editor.putString(Const.Field_Table_User.phone,App.user.mobile);
         editor.putInt(Const.Field_Table_User.Sex,App.user.sex);
@@ -197,14 +193,14 @@ public class App extends Application {
             return false;
         }else{
             App.user.uid=sharedPreferences(Const.Key_SharedPref.Account).getInt(Const.Field_Table_User.Uid,-1);
-            App.user.qnid=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.AvatarQnid,null);
+            App.user.qnid=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.qnid,null);
             App.user.name=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.Name,null);
             App.user.sex=sharedPreferences(Const.Key_SharedPref.Account).getInt(Const.Field_Table_User.Sex,-1);
             App.user.age=sharedPreferences(Const.Key_SharedPref.Account).getInt(Const.Field_Table_User.Age,-1);
             App.user.mobile=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.phone,null);
             App.user.email=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.Email,null);
-            App.user.department=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.department,null);
-            App.user.position=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.position,null);
+            App.user.department=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.bumen,null);
+            App.user.position=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.zhiwei,null);
             App.user.permission=sharedPreferences(Const.Key_SharedPref.Account).getInt(Const.Field_Table_User.Perm,-1);
             App.user.last_login=sharedPreferences(Const.Key_SharedPref.Account).getLong(Const.Field_Table_User.LastLogin,-1);
             return true;

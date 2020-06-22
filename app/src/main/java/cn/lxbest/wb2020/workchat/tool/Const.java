@@ -122,7 +122,7 @@ public class Const {
 
         //基本User表字段
         public static final String Uid = "uid";//用户id
-        public static final String AvatarQnid = "avatar";//用户头像qnid
+        public static final String qnid = "qnid";//用户头像qnid
         public static final String Name = "name";//用户姓名
         public static final String phone = "phone"; //手机
         public static final String Perm="perm";//权限
@@ -130,11 +130,9 @@ public class Const {
         public static final String Sex="sex";//性别
         public static final String Age="age";//年龄
 
-        public static final String company="company";//所处公司
-        public static final String department="department";//所属部门
-        public static final String position="position";//所在职位
+        public static final String bumen ="bumen";//所属部门
+        public static final String zhiwei ="zhiwei";//所在职位
         public static final String LastLogin="lastlogin";//最后登录时间
-
     }
 
 
