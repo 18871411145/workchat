@@ -100,6 +100,8 @@ public class Home_Activity extends AppCompatActivity implements OnRefreshListene
                 JSONObject jsonObject= TestData1.getHomeTask();
                 parseData(jsonObject);
                 }else Funcs.showtoast(Home_Activity.this,"获取数据失败");
+
+                finishRL();
             }
         });
     }

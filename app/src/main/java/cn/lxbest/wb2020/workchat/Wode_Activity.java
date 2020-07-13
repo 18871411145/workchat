@@ -46,6 +46,7 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
     TextView text_position;//所处职位 7
     TextView text_joined;//我参与组的列表
     TextView text_askfor;//员工申请
+    ImageView iv_member;//
     //编辑按钮
     TextView text_edit_head,text_edit_mobile,text_edit_email,text_edit_sex,text_edit_age,text_edit_department,text_edit_position;
 
@@ -72,6 +73,8 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         text_position=findViewById(R.id.zhuwei);
         text_joined=findViewById(R.id.wdzphj);
         text_askfor=findViewById(R.id.xqhzlb);
+        iv_member=findViewById(R.id.iv_member);
+
 
         text_edit_head=findViewById(R.id.textView6);
         text_edit_mobile=findViewById(R.id.bj);
@@ -101,7 +104,7 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         text_name.setText(App.user.name);
         text_mobile.setText(App.user.mobile);
         text_email.setText(App.user.email);
-        text_sex.setText(App.user.sex==1?"男":"女");
+        text_sex.setText(App.user.sex==1?"男":App.user.sex!=0?"女":"");
         text_department.setText(App.user.department);
         text_position.setText(App.user.position);
         text_age.setText(App.user.age+"");
@@ -118,6 +121,11 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         //填充数据
         addtext();
         //按钮监听
+        //身份判断
+        if(App.user.permission!=990){
+            text_askfor.setVisibility(View.GONE);
+            iv_member.setVisibility(View.GONE);
+        }
         text_edit_head.setOnClickListener(this);
         text_edit_mobile.setOnClickListener(this);
         text_edit_email.setOnClickListener(this);

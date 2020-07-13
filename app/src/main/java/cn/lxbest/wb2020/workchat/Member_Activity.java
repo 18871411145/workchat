@@ -79,8 +79,11 @@ public class Member_Activity extends AppCompatActivity {
 
 
     void postMember(int i){
+        if(i==-1){
+            return;
+        }
         btn_agree.setEnabled(false);
-        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.agree_member,"uid="+list.get(i).uid);
+        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.shenqing,"name="+list.get(i).name);
         App.http.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -115,13 +118,17 @@ public class Member_Activity extends AppCompatActivity {
         }
     }
 
+    //得到部门申请人员
     void getData(){
-        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.task,"uid="+uid);
+        list=new ArrayList<>();
+        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.shenqing,"uid="+uid);
         App.http.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 JSONObject jsonObject=Funcs.bytetojson(responseBody);
-                parseResData(jsonObject);
+                if(jsonObject!=null){
+                    parseResData(jsonObject);
+                }
             }
 
             @Override

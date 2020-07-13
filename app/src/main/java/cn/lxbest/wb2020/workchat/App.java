@@ -48,7 +48,7 @@ public class App extends Application {
 
     public static User user = new User();
 
-    public static int env= Const.Env.DEV_TD;
+    public static int env= Const.Env.DEV_OK;
 
     public static  UploadManager uploadManager;
     public static HashMap<String, Object> qnToken = new HashMap<>(); //token, time
@@ -58,7 +58,7 @@ public class App extends Application {
         http.addHeader("dataType", "json");
         http.addHeader("User-Agent", "jpark");
 //        http.setTimeout(1500);
-        http.setMaxRetriesAndTimeout(3, 1500);//该设置需要最低1s才有效
+        http.setMaxRetriesAndTimeout(5, 1500);//该设置需要最低1s才有效
 
     }
 

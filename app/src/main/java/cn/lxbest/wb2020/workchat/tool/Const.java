@@ -65,14 +65,14 @@ public class Const {
         public static String reg="reg";
         //登录
         public static String login="login";
-        //获取公司所有部门信息
-        public static String department="department";
+        //获取公司及部门信息
+        public static String gs_bumen ="gs_bumen";
         //获取主页task
         public static String task="task";
         //获取部门成员信息
         public static String member="member";
-        //同意该员工的申请
-        public static String agree_member="member";
+        //员工申请
+        public static String shenqing ="shenqing";
         //得到相关成员的监督
         public static String supervision="supervision";
         //个人主页修改

@@ -82,27 +82,30 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
     }
 
     //参数为公司名称
-    void getData(final String s){
+    void getData(final String c){
+        btnEnable(false);
+        list_dep=new ArrayList<>();
         String url=null;
-        if(s==null){
-            url=Funcs.servUrl("gs");
+        if(c==null){
+            url=Funcs.servUrl(Const.Key_Resp_Path.gs_bumen);
         }else{
-
-            url=Funcs.servUrlWQ(Const.Key_Resp_Path.department,"gs="+s);
-
+            url=Funcs.servUrlWQ(Const.Key_Resp_Path.gs_bumen,"gs="+c);
         }
         App.http.get(url, new AsyncHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 JSONObject jsonObject=Funcs.bytetojson(responseBody);
-                parseData(jsonObject);
+                if(jsonObject!=null){
+                    parseData(jsonObject);
+                }
+                btnEnable(true);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error){
 
                 if(App.env== Const.Env.DEV_TD){
-                    if(s!=null){
+                    if(c!=null){
                         parseData(TestData1.getDap_Data());
                     }else{
                         parseData(TestData1.getcom_Data());
@@ -111,6 +114,8 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
                 }else{
                     Funcs.showtoast(Reg_activity.this,"获取部门信息失败");
                 }
+
+                btnEnable(true);
             }
         });
     }
@@ -218,7 +223,7 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
                 Funcs.showtoast(this,"职位不能为空");
                 return;
             }
-        JSONObject jsonObject=new JSONObject();
+        final JSONObject jsonObject=new JSONObject();
         try {
             jsonObject.put(Const.Field_Table_User.Name,name);
             jsonObject.put(Const.Field_Table_User.phone,mobile);
@@ -232,7 +237,10 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     JSONObject jsonObject1=Funcs.bytetojson(responseBody);
-                    parseRegData(jsonObject1);
+                    if(jsonObject1!=null){
+                        parseRegData(jsonObject1);
+                    }
+
                 }
 
                 @Override
@@ -258,5 +266,13 @@ public class Reg_activity extends AppCompatActivity implements View.OnClickListe
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    //按键可用
+    void btnEnable(boolean b){
+        btn_reg.setEnabled(b);
+
+        text_company.setEnabled(b);
+        text_department.setEnabled(b);
     }
 }
