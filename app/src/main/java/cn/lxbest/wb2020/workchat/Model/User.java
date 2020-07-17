@@ -20,6 +20,7 @@ public class User {
     public String email;
     public String mobile;
     public int permission;//权限
+    public String company;//公司
     public String department;//部门
     public String position;//职位
     public long last_login;//最后登陆时间
@@ -37,6 +38,7 @@ public class User {
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.Email)) email=jsonObject.getString(Const.Field_Table_User.Email);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.phone)) mobile=jsonObject.getString(Const.Field_Table_User.phone);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.Sex)) sex=jsonObject.getInt(Const.Field_Table_User.Sex);
+            if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.company)) company=jsonObject.getString(Const.Field_Table_User.company);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.bumen)) department=jsonObject.getString(Const.Field_Table_User.bumen);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.zhiwei)) position=jsonObject.getString(Const.Field_Table_User.zhiwei);
             if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_User.LastLogin)) last_login=jsonObject.getLong(Const.Field_Table_User.LastLogin);
@@ -49,15 +51,28 @@ public class User {
     public static class Task {
         public int id;//task id
         public  String qnid;//图片id
+        public int adder;//添加任务组的人的id
+        public long addtime;//添加时间
         public String title;//任务主题
         public String content;//任务内容
+        public List<String> ms=new ArrayList();//参与人的id集合
+
 
         public Task(JSONObject jsonObject){
             try{
                 if(Funcs.jsonItemValid(jsonObject, Const.Field_Table_Task.tid)) id=jsonObject.getInt(Const.Field_Table_Task.tid);
                 if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Task.qnid)) qnid=jsonObject.getString(Const.Field_Table_Task.qnid);
+                if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Task.adder)) adder=jsonObject.getInt(Const.Field_Table_Task.adder);
+                if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Task.addtime))addtime=jsonObject.getLong(Const.Field_Table_Task.addtime);
                 if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Task.title))title=jsonObject.getString(Const.Field_Table_Task.title);
                 if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Task.content))content=jsonObject.getString(Const.Field_Table_Task.content);
+                if(Funcs.jsonItemValid(jsonObject,"member")){
+                    String member=jsonObject.getString("member");
+                    String[] strs=member.split(",");
+                    for(String s:strs){
+                        ms.add(s);
+                    }
+                }
             }catch (Exception e){
 
             }
@@ -66,7 +81,7 @@ public class User {
 
     /**消息列表模型*/
     public static class Message {
-        public Long mid;//消息id
+        public long mid;//消息id
         public String qn_head;//头像的七牛id
         public String file1;//图片id
         public String file2;//文件id
@@ -75,8 +90,6 @@ public class User {
         public  String send_time;//发送时间
         public String content;//发送文字内容
 
-        //如果有需要@的人的id集合
-        public List<Integer> at_list=new ArrayList<>();
 
         //如果该聊天记录存在节点
         public String port_title;//节点名称
@@ -93,14 +106,7 @@ public class User {
                 if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Message.send_time))send_time=jsonObject.getString(Const.Field_Table_Message.send_time);
                 if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Message.text))content=jsonObject.getString(Const.Field_Table_Message.text);
 
-                if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Message.ats)){
-                    JSONArray jsonArray=jsonObject.getJSONArray(Const.Field_Table_Message.ats);
-                    for(int i=0;i<jsonArray.length();i++){
-                        JSONObject js=jsonArray.getJSONObject(i);
-                        int uid=js.getInt(Const.Field_Table_User.Uid);
-                        at_list.add(uid);
-                    }
-                }
+
                 if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Message.port_title)) port_title=jsonObject.getString(Const.Field_Table_Message.port_title);
                 if(Funcs.jsonItemValid(jsonObject,Const.Field_Table_Message.port_content)) port_content=jsonObject.getString(Const.Field_Table_Message.port_content);
             }catch (Exception e){

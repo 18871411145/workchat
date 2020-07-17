@@ -21,16 +21,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.bigkoo.pickerview.OptionsPickerView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,15 +47,15 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
 
     EditText et_title,et_content;
 
-    TextView text_member,text_supervision,text_justknow;
+    TextView text_b, text_j, text_z;
 
     ImageView image1,image2,image3;
 
     Button btn_add_proj;//确认添加
 
-    List<User> list_m=new ArrayList<>();//储存所有部门人员
-    List<User> list_s=new ArrayList<>();//储存所有监督人员
-    List<User> list_o=new ArrayList<>();//储存所有须知人员
+    List<User> list_b =new ArrayList<>();//储存所有部门人员
+    List<User> list_j =new ArrayList<>();//储存所有监督人员
+    List<User> list_z =new ArrayList<>();//储存所有须知人员
 
     List<HashMap> list1=new ArrayList<>();//选中部门人员id
     List<HashMap> list2=new ArrayList<>();//选中监督人员id
@@ -77,9 +75,9 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
     void init(){
         et_title=findViewById(R.id.et_title);
         et_content=findViewById(R.id.et_content);
-        text_member=findViewById(R.id.member);
-        text_supervision=findViewById(R.id.supervision);
-        text_justknow=findViewById(R.id.justknow);
+        text_b =findViewById(R.id.member);
+        text_j =findViewById(R.id.supervision);
+        text_z =findViewById(R.id.justknow);
 
         image1=findViewById(R.id.image1);
         image2=findViewById(R.id.image2);
@@ -103,9 +101,9 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
 
         App.verifyStoragePermissions(this);
 
-        text_member.setOnClickListener(this);
-        text_supervision.setOnClickListener(this);
-        text_justknow.setOnClickListener(this);
+        text_b.setOnClickListener(this);
+        text_j.setOnClickListener(this);
+        text_z.setOnClickListener(this);
 
         image1.setOnClickListener(this);
         image2.setOnClickListener(this);
@@ -120,57 +118,57 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(state==1){
                     //如果该栏中已有名字就在其后加
-                    String before=text_member.getText().toString().trim();
+                    String before= text_b.getText().toString().trim();
                     //判断是否已含有存在的人
                     boolean ifhave=false;
-                        if(before.contains(list_m.get(position).name)){
+                        if(before.contains(list_b.get(position).name)){
                             ifhave=true;
                         }
                     if(!ifhave){
                         if(before.length()==0){
-                            text_member.setText(list_m.get(position).name);
+                            text_b.setText(list_b.get(position).name);
                         }else{
-                            text_member.setText(before+","+list_m.get(position).name);
+                            text_b.setText(before+","+ list_b.get(position).name);
                         }
-                        final int uid=list_m.get(position).uid;
+                        final int uid= list_b.get(position).uid;
                         list1.add(new HashMap(){{
                             put(Const.Field_Table_User.Uid,uid);
                         }});
                     }
 
                 }else if(state==2){
-                    String before=text_supervision.getText().toString().trim();
+                    String before= text_j.getText().toString().trim();
                     //判断是否已含有存在的人
                     boolean ifhave=false;
-                    if(before.contains(list_s.get(position).name)){
+                    if(before.contains(list_j.get(position).name)){
                         ifhave=true;
                     }
                     if(!ifhave){
                         if(before.length()==0){
-                            text_supervision.setText(list_s.get(position).name);
+                            text_j.setText(list_j.get(position).name);
                         }else{
-                            text_supervision.setText(before+","+list_s.get(position).name);
+                            text_j.setText(before+","+ list_j.get(position).name);
                         }
-                        final int uid=list_s.get(position).uid;
+                        final int uid= list_j.get(position).uid;
                         list2.add(new HashMap(){{
                             put(Const.Field_Table_User.Uid,uid);
                         }});
                     }
 
                 }else {
-                    String before=text_justknow.getText().toString().trim();
+                    String before= text_z.getText().toString().trim();
                     boolean ifhave=false;
-                    if(before.contains(list_o.get(position).name)){
+                    if(before.contains(list_z.get(position).name)){
                         ifhave=true;
                     }
                     if(!ifhave){
                         if(before.length()==0){
-                            text_justknow.setText(list_o.get(position).name);
+                            text_z.setText(list_z.get(position).name);
                         }else{
-                            text_justknow.setText(before+","+list_o.get(position).name);
+                            text_z.setText(before+","+ list_z.get(position).name);
                         }
 
-                        final int uid=list_o.get(position).uid;
+                        final int uid= list_z.get(position).uid;
                         list3.add(new HashMap(){{
                             put(Const.Field_Table_User.Uid,uid);
                         }});
@@ -192,7 +190,7 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
             case R.id.member:
                 //点击显示员工名单点名
                 state=1;
-                if(list_m.size()==0){
+                if(list_b.size()==0){
                     getData();
                 }else{
                     listView.setAdapter(adapter);
@@ -202,7 +200,7 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
             case R.id.supervision:
                 //点击显示监督名单点名
                 state=2;
-                if(list_s.size()==0){
+                if(list_j.size()==0){
                     getData();
                 }else{
                     showPick();
@@ -212,7 +210,7 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
             case R.id.justknow:
                 //点击显示须知名单点名
                 state=3;
-                if(list_o.size()==0){
+                if(list_z.size()==0){
                     getData();
                 }else{
                     showPick();
@@ -223,18 +221,18 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
                 //清空之前选中的人
                 const_list.setVisibility(View.INVISIBLE);
                 if(state==1){
-                    text_member.setText("");
+                    text_b.setText("");
                     list1=new ArrayList<>();
                 }else if(state==2){
-                    text_supervision.setText("");
+                    text_j.setText("");
                     list2=new ArrayList<>();
                 }else{
-                    text_justknow.setText("");
+                    text_z.setText("");
                     list3=new ArrayList<>();
                 }
                 break;
             case R.id.add_prj_btn:
-                //提交人员名单
+                //提交任务
                 postData();
                 break;
             case R.id.image1:
@@ -256,21 +254,37 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
     //提交总数据
     void postData(){
         btn_add_proj.setEnabled(false);
-        String url=Funcs.servUrl(Const.Key_Resp_Path.addtask);
+        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.addtask,"uid="+App.user.uid);
 
         String title=et_title.getText().toString().trim();
         String content=et_content.getText().toString().trim();
 
+        if(title.length()==0){
+            Funcs.showtoast(this,"标题不能为空");
+            return;
+        }
+
+        if(content.length()==0){
+            Funcs.showtoast(this,"内容不能为空");
+            return;
+        }
+
+        if(list1.size()==0){
+            Funcs.showtoast(this,"成员不能为空");
+            return;
+        }
+
         JSONObject jsonObject=new JSONObject();
+
 
         try {
             //标题内容
             jsonObject.put(Const.Field_Table_Task.title,title);
             jsonObject.put(Const.Field_Table_Task.content,content);
             //人员id
-            jsonObject.put("member",new JSONArray(list1));
-            jsonObject.put("supervision",new JSONArray(list2));
-            jsonObject.put("justknow",new JSONArray(list3));
+            jsonObject.put("b",new JSONArray(list1));
+            jsonObject.put("j",new JSONArray(list2));
+            jsonObject.put("z",new JSONArray(list3));
             //图片id
             jsonObject.put("images",new JSONObject(qnids));
 
@@ -340,8 +354,15 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
                 Bitmap bitmap= BitmapFactory.decodeStream(is);
                 img.setImageBitmap(bitmap);
                 InputStream inputStream=this.getContentResolver().openInputStream(uri);
-                byte[] bytes=new byte[is.available()];
-                inputStream.read(bytes);
+                byte[] buffer=new byte[4096];
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                int n=0;
+                while ((n=inputStream.read(buffer))!=-1){
+                    output.write(buffer,0,n);
+                }
+                byte[] bytes=output.toByteArray();
+                inputStream.close();
+                output.close();
                 //将读出的字节传到qn服务器
                 App.postImgToQnServer(bytes, new Funcs.CallbackInterface() {
                     @Override
@@ -368,15 +389,16 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
  //TODO url需要设置
     void getData(){
         String url=null;
-        if(state==1){//获取自己部门成员信息
-            url=Funcs.servUrlWQ(Const.Key_Resp_Path.member,"department="+App.user.department);
-            list_m=new ArrayList<>();
-        }else if(state==2){//获取需要知道的部门
-            url=Funcs.servUrlWQ(Const.Key_Resp_Path.member,"department="+App.user.department);
-            list_s=new ArrayList<>();
+        if(state==1){//获取部门人员
+            url=Funcs.servUrlWQ(Const.Key_Resp_Path.member,"m="+1+"&b="+App.user.department+"&c="+App.user.company);
+            list_b =new ArrayList<>();
+        }else if(state==2){//获取监督人员
+            url=Funcs.servUrlWQ(Const.Key_Resp_Path.member,"m="+2+"&c="+App.user.company);
+            list_j =new ArrayList<>();
         }else{
-            url=Funcs.servUrlWQ(Const.Key_Resp_Path.member,"department="+App.user.department);
-            list_o=new ArrayList<>();
+            //获取须知人员
+            url=Funcs.servUrlWQ(Const.Key_Resp_Path.member,"m="+3+"&c="+App.user.company);
+            list_z =new ArrayList<>();
         }
 
 
@@ -404,11 +426,11 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
                 JSONArray jsonArray=data.getJSONArray(Const.Key_Resp.Data);
                 for(int i=0;i<jsonArray.length();i++){
                     if(state==1){
-                        list_m.add(new User(jsonArray.getJSONObject(i)));
+                        list_b.add(new User(jsonArray.getJSONObject(i)));
                     }else if(state==2){
-                        list_s.add(new User(jsonArray.getJSONObject(i)));
+                        list_j.add(new User(jsonArray.getJSONObject(i)));
                     }else
-                        list_o.add(new User(jsonArray.getJSONObject(i)));
+                        list_z.add(new User(jsonArray.getJSONObject(i)));
                 }
 
                 showPick();
@@ -442,19 +464,19 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
         @Override
         public int getCount() {
             if(state==1) {
-                return list_m.size();
+                return list_b.size();
             }else if(state==2){
-                return list_s.size();
-            }else return list_o.size();
+                return list_j.size();
+            }else return list_z.size();
         }
 
         @Override
         public Object getItem(int position) {
             if(state==1) {
-                return list_m.get(position);
+                return list_b.get(position);
             }else if(state==2){
-                return list_s.get(position);
-            }else return list_o.get(position);
+                return list_j.get(position);
+            }else return list_z.get(position);
         }
 
         @Override
@@ -471,11 +493,11 @@ public class Add_Task_Activity extends AppCompatActivity implements View.OnClick
                 view.setTag(container);
             }else container= (Container) view.getTag();
              if(state==1){
-                 container.name.setText(list_m.get(position).name);
+                 container.name.setText(list_b.get(position).name);
              }else if(state==2){
-                 container.name.setText(list_s.get(position).name);
+                 container.name.setText(list_j.get(position).name);
              }else
-                 container.name.setText(list_o.get(position).name);
+                 container.name.setText(list_z.get(position).name);
 
             return view;
         }

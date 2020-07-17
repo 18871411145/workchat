@@ -1,10 +1,7 @@
 package cn.lxbest.wb2020.workchat;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -62,7 +59,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
     MessageListAdapter adapter2=new MessageListAdapter();//消息适配器
 
     List<User> list1=new ArrayList<>();//保存聊天组人员
-    List<User.Message> list2;//聊天信息保存
+    List<User.Message> list2=new ArrayList<>();//聊天信息保存
 
     List<HashMap> at_list=new ArrayList<>();//保存@的人id
 
@@ -151,25 +148,34 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
                 String name=list1.get(position).name;
                 String text=edt_text.getText().toString();
+                if(text.contains("@"+name)){
+                    //存在已经@的人（此操作无效）
+                    int l=text.lastIndexOf("@");
+                    edt_text.setText(text.substring(0,l));
+                    pick_person.setVisibility(View.GONE);
+                    return;
+                }
                 edt_text.setText(text+name);
                 pick_person.setVisibility(View.GONE);
             }
         });
-
+        list_message.setAdapter(adapter2);
         //得到消息信息
         getMessageData();
 
     }
 
     void getMessageData(){
-        list2=new ArrayList<>();
-        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.task,"tid="+tid);
+        list2.clear();
+        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.message,"tid="+tid);
 
         App.http.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 JSONObject jsonObject=Funcs.bytetojson(responseBody);
-                parseMessageData(jsonObject);
+                if(jsonObject!=null){
+                    parseMessageData(jsonObject);
+                }
             }
 
             @Override
@@ -193,7 +199,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
                     JSONObject js=jsonArray.getJSONObject(i);
                     list2.add(new User.Message(js));
                 }
-                list_message.setAdapter(adapter2);
+                adapter2.notifyDataSetChanged();
             }else{
                 Funcs.setMyActionBar(this,"获取数据错误");
             }
@@ -211,7 +217,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
             App.hideLoadingMask(this);
             return;
         }
-        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.task,"tid="+tid);
+        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.ats,"tid="+tid);
 
         App.http.get(url, new AsyncHttpResponseHandler() {
             @Override
@@ -387,7 +393,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
     //删除添加节点请求
    void manageJD(long mid,boolean t){
         btn_b2.setEnabled(false);
-        String url=null;
+        String url;
        String title=et_title.getText().toString().trim();
        String content=et_content.getText().toString().trim();
        final JSONObject jsonObject=new JSONObject();
@@ -402,7 +408,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
 
        if(t){
             //添加节点
-            url=Funcs.servUrlWQ("port","mid="+mid+"&t="+1);
+            url=Funcs.servUrlWQ("port","mid="+mid+"&t=添加");
             if(title.length()==0||content.length()==0){
                 btn_b2.setEnabled(true);
                 Funcs.showtoast(this,"节点信息不完整！");
@@ -410,7 +416,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
             }
         }else{
             //删除节点
-            url=Funcs.servUrlWQ("port","mid="+mid+"&t="+2);
+            url=Funcs.servUrlWQ("port","mid="+mid+"&t=删除");
         }
 
        App.http.post(this, url, entity, Const.contentType, new AsyncHttpResponseHandler() {
@@ -422,6 +428,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
                        int code=js.getInt(Const.Key_Resp.Code);
                        if(code==200){
                            Funcs.showtoast(Task_Detail_Activity.this,"发送成功!");
+                           getMessageData();
                        }else{
                            Funcs.showtoast(Task_Detail_Activity.this,"错误代码");
                        }
@@ -448,10 +455,13 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
     void postMessage(){
 
         //TODO 推送测试
-        Intent intent=new Intent(this, Test_TS_Activity.class);
-        startActivity(intent);
-
+//        Intent intent=new Intent(this, Test_TS_Activity.class);
+//        startActivity(intent);
         String text=edt_text.getText().toString();
+
+        edt_text.setText("");
+        at_list.clear();
+
         if(text.length()==0)return;
         send_message.setEnabled(false);
         //记录需要@的人
@@ -466,7 +476,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
             }
         }
 
-        String url=Funcs.servUrl(Const.Key_Resp_Path.sendmessage);
+        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.addmessage,"uid="+App.user.uid+"&tid="+tid);
 
         JSONObject jsonObject=new JSONObject();
         try {
@@ -487,6 +497,8 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
                         int code=js.getInt(Const.Key_Resp.Code);
                         if(code==200){
                             Funcs.showtoast(Task_Detail_Activity.this,"发送成功!");
+                            //刷新数据
+                            getMessageData();
                         }else{
                             Funcs.showtoast(Task_Detail_Activity.this,"错误代码");
                         }
@@ -640,7 +652,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
                  container.cons_port.setVisibility(View.VISIBLE);
                  container.tv_port.setText(port_title);
              }else{
-                 container.cons_port.setVisibility(View.INVISIBLE);
+                 container.cons_port.setVisibility(View.GONE);
              }
 
              container.iv_port.setOnClickListener(new View.OnClickListener() {
@@ -680,7 +692,6 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
 
      //添加或删除任务节点
      void managePort(String port,int position){
-        cons_setport.setVisibility(View.VISIBLE);
 
         if(port!=null){
             //是否删除任务节点
@@ -699,6 +710,8 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
         }
 
         btn_b2.setTag(position);
+
+        cons_setport.setVisibility(View.VISIBLE);
      }
 
 

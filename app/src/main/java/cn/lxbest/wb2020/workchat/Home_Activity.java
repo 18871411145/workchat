@@ -67,7 +67,7 @@ public class Home_Activity extends AppCompatActivity implements OnRefreshListene
         refreshLayout.setOnLoadMoreListener(this);
         btn_add_task.setOnClickListener(this);
         image_head.setOnClickListener(this);
-        getData(false);
+        getData();
     }
 
     void init(){
@@ -77,21 +77,24 @@ public class Home_Activity extends AppCompatActivity implements OnRefreshListene
         recyclerView=findViewById(R.id.task_recycle);
     }
 
-    //TODO 重新加载跟加载更多url
-    void getData(boolean b){
+
+    void getData(){
         list=new ArrayList<>();
-        String url=null;
-        if(b){
-            url=Funcs.servUrl(Const.Key_Resp_Path.task);
-        }else{
-            url=Funcs.servUrl(Const.Key_Resp_Path.task);
-        }
+        StaggeredGridLayoutManager _sGridLayoutManager = new StaggeredGridLayoutManager(2,
+                StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(_sGridLayoutManager);
+
+
+        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.task,"uid="+App.user.uid);
 
         App.http.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 JSONObject jsonObject=Funcs.bytetojson(responseBody);
-                parseData(jsonObject);
+                if(jsonObject!=null){
+                    parseData(jsonObject);
+                }
+                finishRL();
             }
 
             @Override
@@ -116,11 +119,9 @@ public class Home_Activity extends AppCompatActivity implements OnRefreshListene
                     list.add(new User.Task(jsonArray.getJSONObject(i)));
                 }
                 recyclerView.setAdapter(adapter);
-               finishRL();
 
             }else{
                 Funcs.showtoast(this,"数据错误");
-                finishRL();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -137,13 +138,12 @@ public class Home_Activity extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout){
-        getData(false);
+        getData();
     }
 
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-//        getData(true);
-        refreshLayout.finishLoadMore();
+        getData();
     }
 
     @Override

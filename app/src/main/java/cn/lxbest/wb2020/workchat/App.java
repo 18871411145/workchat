@@ -48,7 +48,7 @@ public class App extends Application {
 
     public static User user = new User();
 
-    public static int env= Const.Env.DEV_OK;
+    public static int env= Const.Env.DEV_TD;
 
     public static  UploadManager uploadManager;
     public static HashMap<String, Object> qnToken = new HashMap<>(); //token, time
@@ -58,7 +58,7 @@ public class App extends Application {
         http.addHeader("dataType", "json");
         http.addHeader("User-Agent", "jpark");
 //        http.setTimeout(1500);
-        http.setMaxRetriesAndTimeout(5, 1500);//该设置需要最低1s才有效
+        http.setMaxRetriesAndTimeout(10, 1500);//该设置需要最低1s才有效
 
     }
 
@@ -72,6 +72,8 @@ public class App extends Application {
         screenHeight = dm.heightPixels;
 
         initCloudChannel(this);
+        //将自己的设备id发送给服务器
+
     }
 
     /**
@@ -140,6 +142,7 @@ public class App extends Application {
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Age)) App.user.age=data.getInt(Const.Field_Table_User.Age);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.phone)) App.user.mobile=data.getString(Const.Field_Table_User.phone);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Email)) App.user.email=data.getString(Const.Field_Table_User.Email);
+            if(Funcs.jsonItemValid(data,Const.Field_Table_User.company)) App.user.company=data.getString(Const.Field_Table_User.company);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.bumen)) App.user.department=data.getString(Const.Field_Table_User.bumen);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.zhiwei)) App.user.position=data.getString(Const.Field_Table_User.zhiwei);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Perm)) App.user.permission=data.getInt(Const.Field_Table_User.Perm);
@@ -172,6 +175,7 @@ public class App extends Application {
         editor.putString(Const.Field_Table_User.qnid,App.user.qnid);
         editor.putString(Const.Field_Table_User.Name,App.user.name);
         editor.putInt(Const.Field_Table_User.Perm,App.user.permission);
+        editor.putString(Const.Field_Table_User.company,App.user.company);
         editor.putString(Const.Field_Table_User.bumen,App.user.department);
         editor.putString(Const.Field_Table_User.zhiwei,App.user.position);
         editor.putString(Const.Field_Table_User.Email,App.user.email);
@@ -200,6 +204,7 @@ public class App extends Application {
             App.user.age=sharedPreferences(Const.Key_SharedPref.Account).getInt(Const.Field_Table_User.Age,-1);
             App.user.mobile=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.phone,null);
             App.user.email=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.Email,null);
+            App.user.company=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.company,null);
             App.user.department=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.bumen,null);
             App.user.position=sharedPreferences(Const.Key_SharedPref.Account).getString(Const.Field_Table_User.zhiwei,null);
             App.user.permission=sharedPreferences(Const.Key_SharedPref.Account).getInt(Const.Field_Table_User.Perm,-1);

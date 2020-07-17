@@ -33,7 +33,6 @@ public class TestData1 {
             data.put(Const.Field_Table_User.Email,"1231231231@qq.com");
             data.put(Const.Field_Table_User.bumen,"设计部");
             data.put(Const.Field_Table_User.zhiwei,"美术设计");
-            data.put(Const.Field_Table_User.Perm,Const.Perm.charge);
             data.put(Const.Field_Table_User.LastLogin,new Date().getTime());
 
             jsonObject.put(Const.Key_Resp.Data,data);

@@ -60,7 +60,7 @@ public class Const {
     public static class Key_Resp_Path{
 
         //向服务器拿qntoken
-        public static String QnToken = "/qnuptok";
+        public static String QnToken = "qntoken";
         //注册
         public static String reg="reg";
         //登录
@@ -69,19 +69,22 @@ public class Const {
         public static String gs_bumen ="gs_bumen";
         //获取主页task
         public static String task="task";
+        //获取本任务组消息列表
+        public static String message="message";
+        //组内@人获取人员信息
+        public static String ats="ats";
         //获取部门成员信息
         public static String member="member";
         //员工申请
         public static String shenqing ="shenqing";
-        //得到相关成员的监督
-        public static String supervision="supervision";
+
         //个人主页修改
         public static String person="person";
         //添加任务请求
         public static String addtask="addtask";
 
         //发送消息请求
-        public static String sendmessage="sendmessage";
+        public static String addmessage ="addmessage";
     }
 
     /**权限表*/
@@ -140,7 +143,9 @@ public class Const {
     /**任务信息*/
     public static class Field_Table_Task{
          public static final String tid="tid";//任务id
-         public static final String qnid="qnid";//
+         public static final String qnid="qnid";
+         public static final String adder="adder";//添加者id
+         public static final String addtime="addtime";//添加时间
          public static final String title="title";
          public static final String content="content";
 
