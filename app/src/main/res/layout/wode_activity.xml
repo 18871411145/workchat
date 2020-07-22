@@ -185,9 +185,10 @@
                     android:text="编辑"
                     android:textColor="@color/black"
                     android:textSize="16dp"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@+id/lxfs"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/lxfs" />
+                    app:layout_constraintTop_toTopOf="@+id/lxfs"/>
 
                 <TextView
                     android:id="@+id/textView"

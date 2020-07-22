@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,7 +57,6 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
     EditText edt_bj;//编辑输入框
     Button btn_post;//上传数据按钮
 
-    //优化代码的存储器；存放state及其代表的含义
     Map<Integer,String> map=new HashMap();
 
     //推出登录
@@ -120,7 +120,6 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         init();
         //填充数据
         addtext();
-        //按钮监听
         //身份判断
         if(App.user.permission!=990){
             text_askfor.setVisibility(View.GONE);
@@ -150,6 +149,7 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         switch (id){
             case R.id.textView6:
                 //编辑头像
+                state=0;
                 Intent intent=new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_PICK);
@@ -217,7 +217,6 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    byte[] bytes=null;
 
     //获取图片返回的流并写入字节数组中，方便传给七牛
     @Override
@@ -234,7 +233,7 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
                 InputStream inputStream=this.getContentResolver().openInputStream(uri);
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 byte[] buffer = new byte[4096];
-                int n = 0;
+                int n;
                 while (-1 != (n = inputStream.read(buffer))) {
                     output.write(buffer, 0, n);
                 }
@@ -258,15 +257,18 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    //临时qnid
+    String tempQnid="";
 
-    void postQnid(String qnid){
-        String url= Funcs.servUrlWQ(Const.Key_Resp_Path.person,"qnid="+qnid);
+    void postQnid(final String qnid){
+        String url= Funcs.servUrlWQ(Const.Key_Resp_Path.wode,"qnid="+qnid+"&uid="+App.user.uid);
         App.http.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 JSONObject jsonObject=Funcs.bytetojson(responseBody);
                 if(jsonObject!=null){
-                    parseData(jsonObject);
+                    tempQnid=qnid;
+                    parseResData(jsonObject);
                 }
 
                 App.hideLoadingMask(Wode_Activity.this);
@@ -280,18 +282,7 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    void parseData(JSONObject data){
-        try {
-            int code=data.getInt(Const.Key_Resp.Code);
-            if(code==200){
-                Funcs.showtoast(this,"上传成功");
-            }else{
-                Funcs.showtoast(this,"上传失败");
-            }
 
-        }catch (Exception e){
-        }
-    }
 
     void postChange(){
 
@@ -301,13 +292,14 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        String url= Funcs.servUrl(Const.Key_Resp_Path.person);
+        String url= Funcs.servUrlWQ(Const.Key_Resp_Path.wode,"uid="+App.user.uid);
+
         JSONObject jsonObject=new JSONObject();
 
         try {
-            jsonObject.put(map.get(state),edt_bj.getText().toString());
+            jsonObject.put(map.get(state),s);
         }catch (Exception e){
-
+            e.printStackTrace();
         }
             HttpEntity entity=new StringEntity(jsonObject.toString(), HTTP.UTF_8);
 
@@ -333,7 +325,6 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
 
 
     }
-    //TODO 客户端还是服务器做判断看数据格式是否合理
     void parseResData(JSONObject data){
         try {
             int code=data.getInt(Const.Key_Resp.Code);
@@ -355,9 +346,11 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
                 }else if(state==5){
                     text_department.setText(content);
                     App.user.department=content;
-                }else{
+                }else if(state==6){
                     text_position.setText(content);
                     App.user.position=content;
+                }else{
+                    App.user.qnid=tempQnid;
                 }
                 App.putUserToPreference();
                 Funcs.showtoast(this,"修改成功");
@@ -365,11 +358,23 @@ public class Wode_Activity extends AppCompatActivity implements View.OnClickList
                 Funcs.showtoast(this,"修改失败,格式不正确");
             }
             edt_bj.setText("");
-            cons_bj.setVisibility(View.INVISIBLE);
+            cons_bj.setVisibility(View.GONE);
         }catch (Exception e){
 
         }
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            if(cons_bj.getVisibility()==View.VISIBLE){
+                edt_bj.setText("");
+                cons_bj.setVisibility(View.GONE);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

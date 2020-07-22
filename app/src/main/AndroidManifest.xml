@@ -35,6 +35,7 @@
         <activity android:name=".ZSZJ_Activity" />
         <activity android:name=".ZSZJ_XQ_Activity" />
         <activity android:name=".DevTD.Test_TS_Activity" />
+        <activity android:name=".Add_ZSZJ_Activity" />
 
         <receiver
             android:name=".MyMessageReceiver"

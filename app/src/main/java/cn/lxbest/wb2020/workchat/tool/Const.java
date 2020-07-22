@@ -79,10 +79,13 @@ public class Const {
         public static String shenqing ="shenqing";
 
         //个人主页修改
-        public static String person="person";
+        public static String wode ="wode";
         //添加任务请求
         public static String addtask="addtask";
-
+        //知识总结添加查询
+        public static String zszj="zszj";
+        //知识总结删除修改
+        public static String zszj_m="zszj_m";
         //发送消息请求
         public static String addmessage ="addmessage";
     }

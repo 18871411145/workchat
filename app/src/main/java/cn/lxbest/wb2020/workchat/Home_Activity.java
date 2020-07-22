@@ -73,6 +73,7 @@ public class Home_Activity extends AppCompatActivity implements OnRefreshListene
     void init(){
         btn_add_task=findViewById(R.id.add_pro_btn);
         image_head=findViewById(R.id.head_imageView);
+        Picasso.with(this).load(Funcs.qnUrl(App.user.qnid)).placeholder(R.drawable.home_head).into(image_head);
         refreshLayout=findViewById(R.id.refresh);
         recyclerView=findViewById(R.id.task_recycle);
     }

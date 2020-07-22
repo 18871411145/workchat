@@ -2,9 +2,11 @@ package cn.lxbest.wb2020.workchat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -48,7 +50,7 @@ public class App extends Application {
 
     public static User user = new User();
 
-    public static int env= Const.Env.DEV_TD;
+    public static int env= Const.Env.DEV_OK;
 
     public static  UploadManager uploadManager;
     public static HashMap<String, Object> qnToken = new HashMap<>(); //token, time
@@ -72,9 +74,11 @@ public class App extends Application {
         screenHeight = dm.heightPixels;
 
         initCloudChannel(this);
-        //将自己的设备id发送给服务器
 
     }
+
+
+
 
     /**
      * 初始化云推送通道
@@ -137,6 +141,7 @@ public class App extends Application {
     public static void putJsonToUser(JSONObject data){
         try{
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Uid)) App.user.uid=data.getInt(Const.Field_Table_User.Uid);
+            if(Funcs.jsonItemValid(data,Const.Field_Table_User.qnid))App.user.qnid=data.getString(Const.Field_Table_User.qnid);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Name)) App.user.name=data.getString(Const.Field_Table_User.Name);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Sex)) App.user.sex=data.getInt(Const.Field_Table_User.Sex);
             if(Funcs.jsonItemValid(data,Const.Field_Table_User.Age)) App.user.age=data.getInt(Const.Field_Table_User.Age);
@@ -313,6 +318,28 @@ public class App extends Application {
         });
     }
 
+//对话框
+
+    public static AlertDialog getAlterDialog(Context context, String title, String message, final Funcs.CallbackInterface callbackInterface){
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        AlertDialog dialog=builder.setTitle(title)
+                .setMessage(message)
+                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(callbackInterface!=null) callbackInterface.onCallback(null);
+
+                    }
+                }).create();
+
+        return  dialog;
+    }
 
 
 

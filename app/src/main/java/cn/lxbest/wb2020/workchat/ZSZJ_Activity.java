@@ -68,6 +68,8 @@ public class ZSZJ_Activity extends AppCompatActivity implements View.OnClickList
                 Intent intent=new Intent(ZSZJ_Activity.this,ZSZJ_XQ_Activity.class);
                 int zid=list.get(position).zid;
                 intent.putExtra("zid",zid);
+                intent.putExtra("title",list.get(position).ztitle);
+                intent.putExtra("content",list.get(position).zcontent);
                 startActivity(intent);
             }
         });
@@ -75,13 +77,22 @@ public class ZSZJ_Activity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        getData();
+    }
+
+    @Override
     public void onClick(View v) {
         //添加知识总结
-
+        Intent intent=new Intent(this,Add_ZSZJ_Activity.class);
+        intent.putExtra("tid",tid);
+        startActivity(intent);
     }
 
     //得到知识总结
     void getData(){
+        list=new ArrayList<>();
         String url=Funcs.servUrlWQ("zszj","tid="+tid);
         App.http.get(url, new AsyncHttpResponseHandler() {
             @Override

@@ -19,11 +19,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -37,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.lxbest.wb2020.workchat.DevTD.TestData1;
-import cn.lxbest.wb2020.workchat.DevTD.Test_TS_Activity;
 import cn.lxbest.wb2020.workchat.Model.User;
 import cn.lxbest.wb2020.workchat.tool.Const;
 import cn.lxbest.wb2020.workchat.tool.Funcs;
@@ -46,7 +50,7 @@ import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.protocol.HTTP;
 
-public class Task_Detail_Activity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
+public class Task_Detail_Activity extends AppCompatActivity implements View.OnClickListener, TextWatcher, MyMessageReceiver.TuiSong, OnRefreshListener, OnLoadMoreListener {
 
     int tid=0;
 
@@ -75,6 +79,8 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
     EditText et_title,et_content;//节点标题，节点描述
     Button btn_b1,btn_b2;//按钮1，按钮2
 
+    //刷新布局
+    SmartRefreshLayout smartRefreshLayout;
 
     void init(){
         title=findViewById(R.id.title);
@@ -108,6 +114,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
         btn_b1=findViewById(R.id.btn_b1);
         btn_b2=findViewById(R.id.btn_b2);
 
+        smartRefreshLayout=findViewById(R.id.refresh);
 
     }
 
@@ -128,6 +135,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
         title.setText(ti);
         task_content.setText(content);
 
+
         btn_ss.setOnClickListener(this);
         send_message.setOnClickListener(this);
 
@@ -142,6 +150,9 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
         iv_file2.setOnClickListener(this);
 
         edt_text.addTextChangedListener(this);
+
+        smartRefreshLayout.setOnRefreshListener(this);
+        smartRefreshLayout.setEnableLoadMore(false);
 
         list_person.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -163,11 +174,20 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
         //得到消息信息
         getMessageData();
 
+        MyMessageReceiver.tuiSong=this;
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        send_menu.setVisibility(View.GONE);
+    }
+
+    private int count=0;//现有聊天记录数
 
     void getMessageData(){
         list2.clear();
-        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.message,"tid="+tid);
+        String url=Funcs.servUrlWQ(Const.Key_Resp_Path.message,"tid="+tid+"&count="+count);
 
         App.http.get(url, new AsyncHttpResponseHandler() {
             @Override
@@ -176,6 +196,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
                 if(jsonObject!=null){
                     parseMessageData(jsonObject);
                 }
+                smartRefreshLayout.finishRefresh();
             }
 
             @Override
@@ -186,6 +207,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
                 }else{
                     Funcs.setMyActionBar(Task_Detail_Activity.this,"网络连接失败");
                 }
+                smartRefreshLayout.finishRefresh();
             }
         });
 
@@ -199,7 +221,8 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
                     JSONObject js=jsonArray.getJSONObject(i);
                     list2.add(new User.Message(js));
                 }
-                adapter2.notifyDataSetChanged();
+                    count=list2.size();
+                    adapter2.notifyDataSetChanged();
             }else{
                 Funcs.setMyActionBar(this,"获取数据错误");
             }
@@ -497,8 +520,7 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
                         int code=js.getInt(Const.Key_Resp.Code);
                         if(code==200){
                             Funcs.showtoast(Task_Detail_Activity.this,"发送成功!");
-                            //刷新数据
-                            getMessageData();
+
                         }else{
                             Funcs.showtoast(Task_Detail_Activity.this,"错误代码");
                         }
@@ -542,6 +564,23 @@ public class Task_Detail_Activity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void afterTextChanged(Editable s) {
+
+    }
+
+    @Override
+    public void callback(String s) {
+        //推送回调
+        getMessageData();
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        //下拉加载之前聊天记录
+        getMessageData();
+    }
+
+    @Override
+    public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
 
     }
 

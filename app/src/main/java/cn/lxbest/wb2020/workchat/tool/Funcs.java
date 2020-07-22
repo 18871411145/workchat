@@ -97,5 +97,4 @@ public class Funcs {
         void onCallback(Object obj);
     }
 
-
 }

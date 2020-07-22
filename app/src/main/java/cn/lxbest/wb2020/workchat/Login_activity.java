@@ -189,10 +189,7 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
                 JSONObject data=jsonObject.getJSONObject(Const.Key_Resp.Data);
                 App.putJsonToUser(data);
                 App.putUserToPreference();
-                //前往主页
-                Intent intent=new Intent(this, Home_Activity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                sendDeviceId();
             }else{
                 Funcs.showtoast(this,"上传失败");
             }
@@ -201,6 +198,36 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    //登录成功将设备id发送给服务器
+    private void sendDeviceId(){
+        String url= Funcs.servUrlWQ("ts","deviceId="+App.deviceId+"&uid="+App.user.uid);
+        App.http.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                JSONObject jsonObject=Funcs.bytetojson(responseBody);
+                if(jsonObject!=null){
+                    try {
+                        int code=jsonObject.getInt(Const.Key_Resp.Code);
+                        if(code==200){
+                            //前往主页
+                            Intent intent=new Intent(Login_activity.this, Home_Activity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }else{
+                            Funcs.showtoast(Login_activity.this,"设备id获取失败");
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            }
+        });
     }
 
 

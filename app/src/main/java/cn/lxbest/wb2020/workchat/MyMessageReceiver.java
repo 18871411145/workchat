@@ -11,10 +11,17 @@ import java.util.Map;
 public class MyMessageReceiver extends MessageReceiver {
 
 
+    public static TuiSong tuiSong;
+
+    public interface  TuiSong{
+        void callback(String s);
+    }
+
     @Override
     public void onNotification(Context context, String title, String summary, Map<String, String> extraMap) {
-        // TODO 处理推送通知
-        Log.e("MyMessageReceiver", "Receive notification, title: " + title + ", summary: " + summary + ", extraMap: " + extraMap);
+        if(tuiSong!=null){
+            tuiSong.callback("");
+        }
     }
 
     @Override
